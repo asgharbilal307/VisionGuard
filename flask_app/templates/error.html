@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card error-card">
+  <span class="error-icon">⚠</span>
+  <h1>Something went wrong</h1>
+  <p class="error-message">{{ error }}</p>
+  <a href="{{ url_for('index') }}" class="btn-primary">Go Back</a>
+</div>
+{% endblock %}

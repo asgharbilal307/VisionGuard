@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>Prediction History</h1>
+  <p class="subtitle">Last 50 classifications</p>
+
+  {% if records %}
+  <div class="table-wrap">
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>File</th>
+          <th>Verdict</th>
+          <th>Confidence</th>
+          <th>Model</th>
+          <th>Threshold</th>
+          <th>Dimensions</th>
+          <th>Timestamp (UTC)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td>{{ r.filename }}</td>
+          <td class="{{ 'ai-tag' if r.label == 'AI-Generated' else 'real-tag' }}">
+            {{ r.label }}
+          </td>
+          <td>{{ (r.confidence * 100) | round(1) }}%</td>
+          <td>{{ r.model_name }}</td>
+          <td>{{ r.threshold }}</td>
+          <td>
+            {% if r.image_width %}
+              {{ r.image_width }}x{{ r.image_height }}
+            {% else %}--{% endif %}
+          </td>
+          <td>{{ r.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty-state">No predictions yet. Upload an image to get started.</p>
+  {% endif %}
+</div>
+{% endblock %}

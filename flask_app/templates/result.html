@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+{% set is_ai = (label|string)|lower in ['ai-generated', 'ai', 'generated'] %}
+{% set display_label = 'AI-Generated' if is_ai else 'Real' %}
+<div class="card result-card">
+  <h1>Classification Result</h1>
+
+  <div class="verdict {{ 'ai' if is_ai else 'real' }}">
+    <span class="verdict-icon">
+      {{ '🤖' if is_ai else '📷' }}
+    </span>
+    <span class="verdict-label">{{ display_label }}</span>
+  </div>
+
+  <div class="confidence-bar-wrap">
+    <div class="confidence-bar"
+         style="width: {{ confidence }}%"></div>
+  </div>
+  <p class="confidence-text">Confidence: <strong>{{ confidence }}%</strong></p>
+
+  <table class="detail-table">
+    <tr><td>File</td><td>{{ filename }}</td></tr>
+    <tr><td>Dimensions</td><td>{{ width }} x {{ height }} px</td></tr>
+    <tr><td>File size</td><td>{{ file_size_kb }} KB</td></tr>
+    <tr><td>Raw probability (AI)</td><td>{{ raw_prob }}</td></tr>
+    <tr><td>Decision threshold</td><td>{{ threshold }}</td></tr>
+    <tr><td>Model</td><td>{{ model_name }}</td></tr>
+    <tr><td>Analysed at</td><td>{{ timestamp }}</td></tr>
+  </table>
+
+  <p class="caveat">
+    ⚠ This result is a statistical estimate. A confidence below 70%
+    indicates ambiguity. Do not use this as sole proof of image origin.
+  </p>
+
+  <a href="{{ url_for('index') }}" class="btn-primary">Analyse Another</a>
+  <a href="{{ url_for('history') }}" class="btn-secondary">View History</a>
+</div>
+{% endblock %}

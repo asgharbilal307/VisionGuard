@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card upload-card">
+  <h1>Is this image AI-generated?</h1>
+  <p class="subtitle">Upload an image and VisionGuard will classify it.</p>
+
+  <form action="{{ url_for('predict_route') }}"
+        method="POST" enctype="multipart/form-data">
+    <div class="drop-zone" id="dropZone">
+      <span class="drop-icon">📁</span>
+      <p>Drag and drop or <label for="imageInput" class="browse-link">browse</label></p>
+      <p class="hint">JPG, PNG, WEBP, BMP -- max 10 MB</p>
+      <input type="file" id="imageInput" name="image"
+             accept=".jpg,.jpeg,.png,.webp,.bmp" required>
+    </div>
+
+    <div id="preview-container" style="display:none">
+      <img id="preview" src="" alt="Preview">
+      <p id="preview-name"></p>
+    </div>
+
+    <button type="submit" class="btn-primary">Analyse Image</button>
+  </form>
+
+  <p class="caveat">
+    ⚠ This model was trained on a limited dataset. Results are probabilistic
+    and should not be used as sole evidence of image authenticity.
+  </p>
+</div>
+
+<script>
+  const input    = document.getElementById("imageInput");
+  const preview  = document.getElementById("preview");
+  const previewC = document.getElementById("preview-container");
+  const nameEl   = document.getElementById("preview-name");
+
+  input.addEventListener("change", () => {
+    const file = input.files[0];
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+      nameEl.textContent = file.name;
+      previewC.style.display = "block";
+    }
+  });
+</script>
+{% endblock %}

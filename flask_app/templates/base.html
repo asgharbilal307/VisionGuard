@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VisionGuard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="shield">🛡</span> VisionGuard
+    </div>
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}">Upload</a>
+      <a href="{{ url_for('history') }}">History</a>
+      <a href="{{ url_for('health') }}">Health</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>VisionGuard -- AI vs Real Image Classifier</p>
+  </footer>
+</body>
+</html>
