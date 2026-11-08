@@ -10,8 +10,9 @@ IMG_SIZE = 224
 # Model is loaded ONCE at startup -- not per request
 # Loading per request would add ~2-5 seconds latency per call
 # and exhaust memory under concurrent load
-_model      = None
+_model = None
 _model_name = None
+
 
 def load_model():
     global _model, _model_name
@@ -30,10 +31,12 @@ def load_model():
     print(f"[Inference] Model loaded: {_model_name}")
     return _model
 
+
 def get_model():
     if _model is None:
         load_model()
     return _model
+
 
 def preprocess(image_bytes: bytes) -> np.ndarray:
     """
@@ -49,23 +52,24 @@ def preprocess(image_bytes: bytes) -> np.ndarray:
     width, height = img.size
     img = img.resize((IMG_SIZE, IMG_SIZE), Image.BILINEAR)
     arr = np.array(img, dtype="float32")
-    arr = np.expand_dims(arr, axis=0)   # shape: (1, 224, 224, 3)
+    arr = np.expand_dims(arr, axis=0)  # shape: (1, 224, 224, 3)
     return arr, width, height
 
+
 def predict(image_bytes: bytes) -> dict:
-    model     = get_model()
+    model = get_model()
     threshold = float(os.environ.get("THRESHOLD", "0.5"))
 
     arr, width, height = preprocess(image_bytes)
-    prob  = float(model.predict(arr, verbose=0)[0][0])
+    prob = float(model.predict(arr, verbose=0)[0][0])
     label = "AI-Generated" if prob >= threshold else "Real"
 
     return {
-        "label":      label,
+        "label": label,
         "confidence": prob if label == "AI-Generated" else 1.0 - prob,
-        "raw_prob":   prob,
-        "threshold":  threshold,
+        "raw_prob": prob,
+        "threshold": threshold,
         "model_name": _model_name or "champion_model.keras",
-        "width":      width,
-        "height":     height,
+        "width": width,
+        "height": height,
     }

@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB:       ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - visionguard_net
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      MODEL_PATH:    /app/models/champion_model.keras
+      THRESHOLD:     ${THRESHOLD}
+      DATABASE_URL:  postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      SECRET_KEY:    ${SECRET_KEY}
+      FLASK_DEBUG:   "0"
+      MAX_FILE_SIZE_MB: "10"
+    volumes:
+      - ./models:/app/models:ro            # model mounted as read-only volume
+    depends_on:
+      db:
+        condition: service_healthy         # wait for postgres to be ready
+    networks:
+      - visionguard_net
+    restart: on-failure
+
+volumes:
+  pgdata:
+
+networks:
+  visionguard_net:
+    driver: bridge

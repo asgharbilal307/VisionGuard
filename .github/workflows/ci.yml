@@ -1,0 +1,41 @@
+name: VisionGuard CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest flake8
+
+      - name: Lint Python code
+        run: |
+          flake8 flask_app/ run.py --max-line-length=100 --ignore=E501,W503,E402
+
+      - name: Run tests
+        run: pytest tests/ -v
+        env:
+          MODEL_PATH: models/champion_model.keras
+          DATABASE_URL: sqlite:///test.db
+          SECRET_KEY: test-secret-key
+          THRESHOLD: "0.5"
+
+      - name: Build Docker image
+        run: docker build -t visionguard:ci .
