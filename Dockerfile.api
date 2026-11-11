@@ -1,0 +1,29 @@
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd --create-home --shell /bin/bash appuser
+
+WORKDIR /app
+
+COPY requirements.api.txt .
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.api.txt
+
+COPY flask_app/ ./flask_app/
+COPY run_api.py .
+COPY models/champion_model.keras ./models/champion_model.keras
+
+ENV MODEL_PATH=models/champion_model.keras
+
+RUN chown -R appuser:appuser /app
+
+USER appuser
+
+EXPOSE 10000
+
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-10000} --workers 1 --threads 4 --timeout 120 run_api:app"]

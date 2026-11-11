@@ -1,0 +1,8 @@
+tensorflow-cpu==2.21.0
+keras==3.13.2
+flask==3.0.3
+pillow==10.3.0
+numpy==1.26.4
+python-dotenv==1.0.1
+werkzeug==3.0.3
+gunicorn==23.0.0
