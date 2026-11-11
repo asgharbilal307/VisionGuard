@@ -15,7 +15,6 @@ venv_old/
 .venv/
 
 # Model files
-models/*.keras
 models/*.h5
 
 # Dataset
