@@ -7,7 +7,6 @@
 __pycache__/
 *.py[cod]
 *.egg-info/
-.python-version
 
 # Virtual environments
 venv/
@@ -32,3 +31,6 @@ data/processed/
 
 # OS
 .DS_Store
+
+# Include Python version for Vercel
+version

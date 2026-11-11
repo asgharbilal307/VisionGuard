@@ -1,12 +1,7 @@
-tensorflow-cpu==2.21.0
 flask==3.0.3
 sqlalchemy==2.0.30
 pillow==10.3.0
-numpy==1.26.4
 python-dotenv==1.0.1
-mlflow==3.17.2
-dagshub==0.3.25
-scikit-learn==1.4.2
 werkzeug==3.0.3
 psycopg2-binary==2.9.9
-keras==3.13.2
+requests==2.32.3
